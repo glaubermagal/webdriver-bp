@@ -1,3 +1,14 @@
+process.env.MOBILE_OS = 'android';
+const APP_PATH = process.env.APPIUM_APK;
+
+
+const host = '127.0.0.1';   // default appium host
+const port = 4730;          // default appium port
+
+const waitforTimeout = 30 * 60000;
+const commandTimeout = 30 * 60000;
+
+
 exports.config = {
     //
     // ==================
@@ -34,22 +45,25 @@ exports.config = {
     // spawned. The property handles how many capabilities from the same test
     // should run tests.
     //
-    maxInstances: 5,
+
+    host: host,
+    port: port,
+
+    maxInstances: 1,
     //
     // If you have trouble getting all important capabilities together, check
     // out the Sauce Labs platform configurator - a great tool to configure your
     // capabilities: https://docs.saucelabs.com/reference/platforms-configurator
     //
     capabilities: [{
-        // maxInstances can get overwritten per capability. So if you have an
-        // in-house Selenium grid with only 5 firefox instance available you can
-        // make sure that not more than 5 instance gets started at a time.
-        maxInstances: 5,
-        //
-        browserName: 'chrome',
-        // chromeOptions: {
-        //     args: ['--headless', '--disable-gpu'],
-        // }
+        appiumVersion: '1.8.1',
+        browserName: 'chrome',  // browser name should be specified
+        platformName: 'Android',
+        platformVersion: '6.0.1',
+        deviceName: 'Magal', // device name is mandatory
+        waitforTimeout: '7200',
+        commandTimeout: '7200',
+        newCommandTimeout: 30 * 60000,
     }],
     //
     // ===================
@@ -74,7 +88,7 @@ exports.config = {
     //
     // Set a base URL in order to shorten url command calls. If your url
     // parameter starts with "/", then the base url gets prepended.
-    baseUrl: 'http://localhost:8000',
+    baseUrl: 'http://192.168.0.11:8000',
     //
     // Default timeout for all waitFor* commands.
     waitforTimeout: 10000,
@@ -108,7 +122,20 @@ exports.config = {
     // Services take over a specific job you don't want to take care of. They
     // enhance your test setup with almost no effort. Unlike plugins, they don't
     // add new commands. Instead, they hook themselves up into the test process.
-    services: ['phantomjs'],
+    services: ['appium'],
+    appium: {
+        waitStartTime: 6000,
+        waitforTimeout: waitforTimeout,
+        command: 'appium',
+        logFileName: 'appium.log',
+        args: {
+            address: host,
+            port: port,
+            commandTimeout: commandTimeout,
+            sessionOverride: true,
+            debugLogSpacing: true
+        }
+    },
     //
     // Framework you want to run your specs with.
     // The following are supported: Mocha, Jasmine, and Cucumber
@@ -246,4 +273,27 @@ exports.config = {
     // exit. It is not possible to defer the end of the process using a promise.
     // onComplete: function onComplete(exitCode) {
     // }
+
+
+    /**
+     * hooks
+     */
+    onPrepare: function () {
+        console.log('<<< BROWSER TESTS STARTED >>>');
+    },
+
+    before: function (capabilities, specs) {
+        browser.url(this.baseUrl);
+    },
+
+    afterScenario: function (scenario) {
+       browser.screenshot();
+    },
+
+    onComplete: function () {
+
+        console.log('<<< TESTING FINISHED >>>');
+    }
+
+
 };
