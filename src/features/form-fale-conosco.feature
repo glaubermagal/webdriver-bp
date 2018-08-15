@@ -6,7 +6,7 @@ Feature: Submitting "Fale Conosco" form
 	Background:
 		Given I open the url "/fale-conosco"
 
-	Scenario: Test form successfully
+	Scenario: Test with correct data
 		When  I add "Terminator" to the inputfield "#content input[name=nome]"
             And   I add "(83) 98886-4544" to the inputfield "#content [name='telefone']"
             And   I add "theend@skynet.me" to the inputfield "#content [name='email']"

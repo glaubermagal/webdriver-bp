@@ -6,7 +6,7 @@ Feature: Submitting "Parceiros" form
 	Background:
 		Given I open the url "/parceiros"
 
-    Scenario: Test form successfully
+    Scenario: Test with correct data
         When  I add "Terminator" to the inputfield "#content [name=nome]"
             And   I add "Sarah Connor" to the inputfield "#content [name=corretora]"
             And   I add "(83) 98886-4544" to the inputfield "#content [name=telefone]"
